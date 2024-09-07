@@ -1,6 +1,7 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import Home from '../views/Home.vue'
 import Stretch from '../views/Stretch.vue'
+import Home2 from '../views/Home2.vue'
 // import Profile from '../views/Profile.vue'
 // import User from '../views/User.vue'
 // import ArticleView from '../views/ArticleView.vue'
@@ -22,6 +23,14 @@ const router = createRouter({
       component: Stretch,
       meta: {
         title: 'Stretch'
+      }
+    },
+    {
+      path: '/home2',
+      name: 'Home2',
+      component: Home2,
+      meta: {
+        title: 'Home2'
       }
     },
     // {
