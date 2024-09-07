@@ -1,0 +1,1 @@
+export const baseUrl = 'https://sizze66816.execute-api.ap-northeast-1.amazonaws.com';
