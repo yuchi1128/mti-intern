@@ -1,9 +1,9 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
 import Home from '../views/Home.vue'
-import Login from '../views/Login.vue'
-import Profile from '../views/Profile.vue'
-import User from '../views/User.vue'
-import ArticleView from '../views/ArticleView.vue'
+import Stretch from '../views/Stretch.vue'
+// import Profile from '../views/Profile.vue'
+// import User from '../views/User.vue'
+// import ArticleView from '../views/ArticleView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -17,37 +17,37 @@ const router = createRouter({
       }
     },
     {
-      path: '/Login',
-      name: 'Login',
-      component: Login,
+      path: '/stretch',
+      name: 'Stretch',
+      component: Stretch,
       meta: {
-        title: 'Login'
+        title: 'Stretch'
       }
     },
-    {
-      path: '/profile',
-      name: 'Profile',
-      component: Profile,
-      meta: {
-        title: 'Profile'
-      }
-    },
-    {
-      path: '/user',
-      name: 'User',
-      component: User,
-      meta: {
-        title: 'User'
-      }
-    },
-    {
-      path: '/articleview',
-      name: 'ArticleView',
-      component: ArticleView,
-      meta: {
-        title: 'ArticleView'
-      }
-    }
+    // {
+    //   path: '/profile',
+    //   name: 'Profile',
+    //   component: Profile,
+    //   meta: {
+    //     title: 'Profile'
+    //   }
+    // },
+    // {
+    //   path: '/user',
+    //   name: 'User',
+    //   component: User,
+    //   meta: {
+    //     title: 'User'
+    //   }
+    // },
+    // {
+    //   path: '/articleview',
+    //   name: 'ArticleView',
+    //   component: ArticleView,
+    //   meta: {
+    //     title: 'ArticleView'
+    //   }
+    // }
   ]
 })
 
