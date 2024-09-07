@@ -21,7 +21,7 @@ exports.handler = async (event, context) => {
   };
 
   // リクエストボディの中身をJavaScriptオブジェクトに変換
-  const { user_id, password } = JSON.parse(event.body);
+  const { user_id, password,trainingcount } = JSON.parse(event.body);
 
   try {
     // パスワードのハッシュ化
@@ -32,7 +32,8 @@ exports.handler = async (event, context) => {
       TableName,
       Item: marshall({
         user_id,
-        password: hashedPassword, // ハッシュ化されたパスワードを保存
+        password: hashedPassword,// ハッシュ化されたパスワードを保存
+        trainingcount,
       }, {
         removeUndefinedValues: true,  // undefined の値を除去
       }),
