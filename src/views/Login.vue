@@ -1,166 +1,193 @@
 <template>
-  <div>
-    <div class="ui main container">
-      <!-- 基本的なコンテンツはここに記載する -->
-
-      <!-- 発展課題のローディング表示用 -->
-      <div class="ui active inverted page dimmer" v-if="isCallingApi">
-        <div class="ui text loader">Loading</div>
-      </div>
-
-      <div class="ui segment">
-        <!-- 発展課題のエラーメッセージ用-->
-        <p class="ui negative message" v-if="errorMsg">
-          <i class="close icon" @click="clearError"></i>
-          <span class="header">エラーが発生しました！</span>
-          {{ errorMsg }}
-        </p>
-
-        <!-- submitイベントを拾って、preventにて規定のアクションを中止し、submitメソッドを呼び出す。-->
-        <form class="ui large form" @submit.prevent="submit" >
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="user icon"></i>
-              <input v-model="user.user_id" type="text" placeholder="ID"/>
-            </div>
-          </div>
-
-          <div class="field">
-            <div class="ui left icon input">
-              <i class="lock icon"></i>
-              <input v-model="user.password" type="password" placeholder="Password"/>
-            </div>
-          </div>
-
-          <!-- <div class="field" v-if="!isLogin">
-            <div class="ui left icon input">
-              <i class="tag icon"></i>
-              <input v-model="user.nickname" type="text" placeholder="Nickname"/>
-            </div>
-          </div>
-
-          <div class="field" v-if="!isLogin">
-            <div class="ui left icon input">
-              <i class="calendar icon"></i>
-              <input v-model.number="user.age" type="number" min="0" placeholder="Age"/>
-            </div>
-          </div> -->
-
-          <button class="ui huge green fluid button" :disabled="isButtonDisabled" type="submit">{{ submitBtnText }}</button>
-        </form>
-      </div>
-
-      <button @click="toggleMode" class="ui huge grey fluid button" type="submit">{{ toggledBtnText }}</button>
+  <div class="container">
+    <div class="card">
+      <h1 class="title">ほっこりケア・フィット</h1>
+      <h2 class="subtitle">{{ isLogin ? 'ログイン' : '新規登録' }}</h2>
+      <form @submit.prevent="handleSubmit" class="form">
+        <div class="form-group" v-if="!isLogin">
+          <label for="username" class="label">ユーザー名</label>
+          <input type="text" id="username" v-model="username" class="input" required>
+        </div>
+        <div class="form-group">
+          <label for="email" class="label">メールアドレス</label>
+          <input type="email" id="email" v-model="email" class="input" required>
+        </div>
+        <div class="form-group">
+          <label for="password" class="label">パスワード</label>
+          <input type="password" id="password" v-model="password" class="input" required>
+        </div>
+        <button type="submit" class="submit-button" >
+          {{ isLogin ? 'ログイン' : '新規登録' }}
+        </button>
+      </form>
+      <button @click="toggleAuthMode" class="toggle-button">
+        {{ isLogin ? '新規登録はこちらから' : 'ログインはこちらから' }}
+      </button>
     </div>
   </div>
 </template>
 
-<script>
-// 必要なものはここでインポートする
-// @は/srcの同じ意味です
-// import something from '@/components/something.vue';
-import { baseUrl } from '@/assets/config.js';
+<script setup>
+import { ref } from 'vue'
+// UUID生成用ライブラリをインポート
+import { v4 as uuidv4 } from 'uuid'
+import { useRouter } from 'vue-router'
 
-export default {
-  name: 'Login',
+const router = useRouter()
 
-  components: {
-    // 読み込んだコンポーネント名をここに記述する
-  },
+const isLogin = ref(true)
+const username = ref('')
+const email = ref('')
+const password = ref('')
 
-  data() {
-    // Vue.jsで使う変数はここに記述する
-    return {
-      isLogin: true,
-      user: {
-        user_id: null,
-        password: null,
+// ローカルストレージに保存されたuser_idを取得
+const storedUserId = localStorage.getItem('user_id') || uuidv4() // 新規登録時は生成
+
+// ローカルストレージに保存しておく（ユーザーIDがない場合のみ）
+if (!localStorage.getItem('user_id')) {
+  localStorage.setItem('user_id', storedUserId)
+}
+
+const toggleAuthMode = () => {
+  isLogin.value = !isLogin.value
+  username.value = ''
+  email.value = ''
+  password.value = ''
+}
+
+const handleSubmit = async () => {
+  try {
+    let url = ''
+    let method = ''
+    let body = {}
+
+    if (isLogin.value) {
+      // ログイン処理
+      url = 'https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/login'
+      method = 'PUT'
+      // ログインにもuser_idが必要な場合
+      body = { user_id: storedUserId, email: email.value, password: password.value }
+    } else {
+      // 新規登録処理
+      url = 'https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/signup'
+      method = 'POST'
+      body = { user_id: storedUserId, username: username.value, email: email.value, password: password.value }
+    }
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
       },
-      errorMsg: '', // 発展課題のエラーメッセージ用
-      isCallingApi: false // 発展課題のローディング表示用
-    };
-  },
+      body: JSON.stringify(body),
+    })
 
-  computed: {
-    // 計算した結果を変数として利用したいときはここに記述する
-
-    // 発展課題のボタン活性/非活性用
-    isButtonDisabled() {
-      const { user_id, password} = this.user;
-      return this.isLogin
-          ? !user_id || !password
-          : !user_id || !password;
-    },
-
-    submitBtnText() {
-      return this.isLogin ? 'ログイン':'新規登録'
-    },
-
-    toggledBtnText() {
-      return this.isLogin ? '新規登録':'ログイン'
+    if (!response.ok) {
+      throw new Error(`エラーが発生しました: ${response.statusText}`)
     }
-  },
 
-
-  methods: {
-    // Vue.jsで使う関数はここで記述する
-
-    // 発展課題のエラーメッセージ用
-    clearError() {
-      this.errorMsg = ''
-    },
-
-    toggleMode() {
-      this.isLogin = !this.isLogin;
-    },
-
-    async submit() {
-      if (this.isCallingApi) {
-        return;
-      }
-      this.isCallingApi = true;
-
-      const path = this.isLogin? '/user/login' : '/user/signup';
-      const { user_id, password } = this.user;
-      const reqBody = this.isLogin
-        ? { user_id, password }
-        : { user_id, password };
-
-      try {
-        /* global fetch */
-        const res = await fetch(baseUrl + path,
-        {
-          method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-          body: JSON.stringify(reqBody)
-        });
-
-        const text = await res.text();
-        const jsonData = text ? JSON.parse(text) : {}
-
-        // fetchではネットワークエラー以外のエラーはthrowされないため、明示的にthrowする
-        if (!res.ok) {
-          const errorMessage = jsonData.message ?? 'エラーメッセージがありません';
-          throw new Error(errorMessage);
-        }
-
-        window.localStorage.setItem('token', jsonData.token);
-        window.localStorage.setItem('user_id', this.user.user_id);
-
-        this.$router.push({ name: 'Home' });
-      } catch (e) {
-        console.error(e);
-        this.errorMsg = e;
-      } finally {
-        this.isCallingApi = false;
-      }
-    }
-  },
+    const data = await response.json()
+    console.log('成功:', data)
+    
+    router.push('/symptom-select') 
+    
+    alert(isLogin.value ? 'ログイン成功！' : '新規登録成功！')
+    
+  } catch (error) {
+    console.error('エラー:', error)
+    alert('エラーが発生しました。再度お試しください。')
+  }
 }
 </script>
 
 <style scoped>
-/* このコンポーネントだけに適用するCSSはここに記述する */
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff0f5;
+}
+
+.card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 24rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #8a2be2;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.form {
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4a5568;
+  margin-bottom: 0.25rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+
+.submit-button {
+  width: 100%;
+  background-color: #8a2be2;
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #7a1fd6;
+}
+
+.toggle-button {
+  width: 100%;
+  background-color: transparent;
+  color: #8a2be2;
+  padding: 0.5rem;
+  border: 1px solid #8a2be2;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.toggle-button:hover {
+  background-color: #8a2be2;
+  color: white;
+}
 </style>
