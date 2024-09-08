@@ -59,7 +59,7 @@ export default {
   created: async function() {
     // Vue.jsの読み込みが完了したときに実行する処理はここに記述する
     // apiからarticleを取得する
-    this.$router.push({ name: 'Stretch'})//SearchView//PostView
+    this.$router.push({ name: 'Login'})//SearchView//PostView
   },
 
   methods: {
