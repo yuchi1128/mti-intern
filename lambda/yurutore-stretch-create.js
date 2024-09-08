@@ -2,7 +2,7 @@ const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
 const { marshall } = require("@aws-sdk/util-dynamodb");
 
 const client = new DynamoDBClient({ region: "ap-northeast-1" });
-const TableName = "team2_stretchcontent";
+const TableName = "team2_Stratchcontent";
 
 const VALID_TOKEN = "mtiToken";
 
@@ -27,24 +27,37 @@ exports.handler = async (event) => {
 
   // リクエストボディのパース
   const body = event.body ? JSON.parse(event.body) : null;
-  if (!body || !body.Symptom || !body.Severity || !body.ImageURLs || !body.Duration) {
-    response.statusCode = 400;
+
+  // デバッグ用ログ
+  console.log("Request body:", body);
+  
+  if (!body || !body.Stretch_id || typeof body.Symptom !== 'string' || typeof body.Severity !== 'number' || typeof body.ImageURLs !== 'string' || typeof body.Duration !== 'number' || !Array.isArray(body.Stretch_context)) {
     response.body = JSON.stringify({
       message: "無効なリクエストです。必要なフィールドが不足しています。",
     });
     return response;
   }
 
-  const { Symptom, Severity, ImageURLs, Duration } = body;
+  const { Stretch_id, Symptom, Severity, ImageURLs, Duration, Stretch_context } = body;
 
   // DynamoDB に保存するためのパラメータ
   const param = {
     TableName,
+    // Item: marshall({
+    //   Stretch_id: Stretch_id,
+    //   Symptom: Symptom,         // 数値として保存
+    //   Severity: Severity,       // 数値として保存
+    //   ImageURLs: ImageURLs,    // 文字列として保存
+    //   Duration: Duration,      // 数値として保存
+    //   Stretch_context: Stretch_context // 配列として保存
+    // }),
     Item: marshall({
-      Symptom: Symptom, // パーティションキー
-      Severity: Severity, // ソートキー
+      Stretch_id: Stretch_id,
+      Symptom: Symptom,
+      Severity: Severity,  // 文字列として保存
       ImageURLs: ImageURLs,
-      Duration: Duration
+      Duration: Duration,
+      Stretch_context: Stretch_context
     }),
   };
 
