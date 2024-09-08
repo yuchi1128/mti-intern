@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Stretch from '../views/Stretch.vue'
 import Home2 from '../views/Home2.vue'
 import Login from '../views/Login.vue'
+import SymptomSelect from '../views/SymptomSelect.vue'
 // import Profile from '../views/Profile.vue'
 // import User from '../views/User.vue'
 // import ArticleView from '../views/ArticleView.vue'
@@ -40,6 +41,14 @@ const router = createRouter({
       component: Login,
       meta: {
         title: 'Home2'
+      }
+    },
+    {
+      path: '/symptom-select',
+      name: 'SymptomSelect',
+      component: SymptomSelect,
+      meta: {
+        title: 'SymptomSelect'
       }
     },
     // {

@@ -16,7 +16,7 @@
           <label for="password" class="label">パスワード</label>
           <input type="password" id="password" v-model="password" class="input" required>
         </div>
-        <button type="submit" class="submit-button" >
+        <button type="submit" class="submit-button">
           {{ isLogin ? 'ログイン' : '新規登録' }}
         </button>
       </form>
@@ -29,24 +29,11 @@
 
 <script setup>
 import { ref } from 'vue'
-// UUID生成用ライブラリをインポート
-import { v4 as uuidv4 } from 'uuid'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
 
 const isLogin = ref(true)
 const username = ref('')
 const email = ref('')
 const password = ref('')
-
-// ローカルストレージに保存されたuser_idを取得
-const storedUserId = localStorage.getItem('user_id') || uuidv4() // 新規登録時は生成
-
-// ローカルストレージに保存しておく（ユーザーIDがない場合のみ）
-if (!localStorage.getItem('user_id')) {
-  localStorage.setItem('user_id', storedUserId)
-}
 
 const toggleAuthMode = () => {
   isLogin.value = !isLogin.value
@@ -55,48 +42,13 @@ const toggleAuthMode = () => {
   password.value = ''
 }
 
-const handleSubmit = async () => {
-  try {
-    let url = ''
-    let method = ''
-    let body = {}
-
-    if (isLogin.value) {
-      // ログイン処理
-      url = 'https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/login'
-      method = 'PUT'
-      // ログインにもuser_idが必要な場合
-      body = { user_id: storedUserId, email: email.value, password: password.value }
-    } else {
-      // 新規登録処理
-      url = 'https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/signup'
-      method = 'POST'
-      body = { user_id: storedUserId, username: username.value, email: email.value, password: password.value }
-    }
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
-
-    if (!response.ok) {
-      throw new Error(`エラーが発生しました: ${response.statusText}`)
-    }
-
-    const data = await response.json()
-    console.log('成功:', data)
-    
-    router.push('/symptom-select') 
-    
-    alert(isLogin.value ? 'ログイン成功！' : '新規登録成功！')
-    
-  } catch (error) {
-    console.error('エラー:', error)
-    alert('エラーが発生しました。再度お試しください。')
+const handleSubmit = () => {
+  if (isLogin.value) {
+    console.log('ログイン処理:', { email: email.value, password: password.value })
+  } else {
+    console.log('新規登録処理:', { username: username.value, email: email.value, password: password.value })
   }
+  // ここに実際の認証処理を追加してください
 }
 </script>
 
