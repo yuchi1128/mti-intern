@@ -40,7 +40,7 @@ const router = createRouter({
       name: 'Login',
       component: Login,
       meta: {
-        title: 'Home2'
+        title: 'Login'
       }
     },
     {

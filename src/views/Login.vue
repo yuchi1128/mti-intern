@@ -4,11 +4,11 @@
       <h1 class="title">ほっこりケア・フィット</h1>
       <h2 class="subtitle">{{ isLogin ? 'ログイン' : '新規登録' }}</h2>
       <form @submit.prevent="handleSubmit" class="form">
-        <div class="form-group" v-if="!isLogin">
+        <div class="form-group" >
           <label for="username" class="label">ユーザー名</label>
           <input type="text" id="username" v-model="username" class="input" required>
         </div>
-        <div class="form-group">
+        <div class="form-group" v-if="!isLogin">
           <label for="email" class="label">メールアドレス</label>
           <input type="email" id="email" v-model="email" class="input" required>
         </div>
@@ -16,7 +16,7 @@
           <label for="password" class="label">パスワード</label>
           <input type="password" id="password" v-model="password" class="input" required>
         </div>
-        <button type="submit" class="submit-button" >
+        <button type="submit" class="submit-button">
           {{ isLogin ? 'ログイン' : '新規登録' }}
         </button>
       </form>
@@ -29,24 +29,16 @@
 
 <script setup>
 import { ref } from 'vue'
-// UUID生成用ライブラリをインポート
-import { v4 as uuidv4 } from 'uuid'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
 const isLogin = ref(true)
-const username = ref('')
+const username = ref('') // 新規登録用のユーザー名
 const email = ref('')
 const password = ref('')
 
-// ローカルストレージに保存されたuser_idを取得
-const storedUserId = localStorage.getItem('user_id') || uuidv4() // 新規登録時は生成
-
-// ローカルストレージに保存しておく（ユーザーIDがない場合のみ）
-if (!localStorage.getItem('user_id')) {
-  localStorage.setItem('user_id', storedUserId)
-}
+// ローカルストレージからユーザーIDを取得する処理は削除しました
 
 const toggleAuthMode = () => {
   isLogin.value = !isLogin.value
@@ -64,15 +56,20 @@ const handleSubmit = async () => {
     if (isLogin.value) {
       // ログイン処理
       url = 'https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/login'
-      method = 'PUT'
-      // ログインにもuser_idが必要な場合
-      body = { user_id: storedUserId, email: email.value, password: password.value }
+      method = 'POST'
+      body = { user_id: username.value, password: password.value }
     } else {
       // 新規登録処理
       url = 'https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/signup'
       method = 'POST'
-      body = { user_id: storedUserId, username: username.value, email: email.value, password: password.value }
+      body = { user_id: username.value, email: email.value, password: password.value }
     }
+
+    console.log('Sending request:', {
+      url,
+      method,
+      body,
+    })
 
     const response = await fetch(url, {
       method,

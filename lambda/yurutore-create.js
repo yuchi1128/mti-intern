@@ -1,15 +1,10 @@
 const { DynamoDBClient, PutItemCommand } = require("@aws-sdk/client-dynamodb");
 const { marshall } = require("@aws-sdk/util-dynamodb");
-const crypto = require('crypto'); // cryptoモジュールをインポート
+
 const client = new DynamoDBClient({ region: "ap-northeast-1" });
 const TableName = "team2_user";
 
-// パスワードのハッシュ化関数
-const hashPassword = (password) => {
-  const hash = crypto.createHash('sha256');
-  hash.update(password);
-  return hash.digest('hex'); // ハッシュ値を16進数文字列として返す
-};
+// パスワードのハッシュ化機能を削除
 
 exports.handler = async (event, context) => {
   const response = {
@@ -21,18 +16,16 @@ exports.handler = async (event, context) => {
   };
 
   // リクエストボディの中身をJavaScriptオブジェクトに変換
-  const { user_id, password,trainingcount } = JSON.parse(event.body);
+  const { user_id, email, password, trainingcount } = JSON.parse(event.body);
 
   try {
-    // パスワードのハッシュ化
-    const hashedPassword = hashPassword(password);
-
     // DBに登録するための情報をparamオブジェクトとして宣言
     const param = {
       TableName,
       Item: marshall({
         user_id,
-        password: hashedPassword,// ハッシュ化されたパスワードを保存
+        email,
+        password, // プレーンテキストのパスワードをそのまま保存
         trainingcount,
       }, {
         removeUndefinedValues: true,  // undefined の値を除去
@@ -47,7 +40,7 @@ exports.handler = async (event, context) => {
 
     // 登録に成功した場合の処理
     response.statusCode = 201;
-    response.body = JSON.stringify({ user_id});
+    response.body = JSON.stringify({ user_id });
   } catch (e) {
     console.error(e);
     response.statusCode = 500;
