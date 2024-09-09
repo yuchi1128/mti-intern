@@ -3,6 +3,17 @@
     <div class="card">
       <h1 class="title">今日の振り返り</h1>
       <form @submit.prevent="submitForm" class="reflection-form">
+        <div class="info-section">
+          <div class="info-item">
+            <span class="info-label">お悩み</span>
+            <span class="info-value">{{ concern }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">ストレッチ内容</span>
+            <span class="info-value">{{ stretchContent }}</span>
+          </div>
+        </div>
+
         <div class="question">
           <p>疲労感は改善されましたか？</p>
           <div class="rating">
@@ -35,12 +46,15 @@
 <script setup>
 import { ref } from 'vue';
 
+const concern = ref('腰痛');
+const stretchContent = ref('腰のストレッチ');
 const fatigueImprovement = ref(null);
 const impression = ref('');
 
 const submitForm = () => {
-  // ここでフォームデータを処理します（例：APIに送信、ローカルストレージに保存など）
   console.log({
+    concern: concern.value,
+    stretchContent: stretchContent.value,
     fatigueImprovement: fatigueImprovement.value,
     impression: impression.value
   });
@@ -79,6 +93,35 @@ const submitForm = () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-bottom: 1px solid #e0d0ff;
+  padding-bottom: 1rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #5600e8;
+  font-size: 1rem;
+  min-width: 120px;
+}
+
+.info-value {
+  font-weight: 500;
+  color: #333;
+  padding: 0.5rem 0;
+  flex-grow: 1;
+  font-size: 1rem;
 }
 
 .question {
