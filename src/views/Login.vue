@@ -92,8 +92,6 @@ const handleSubmit = async () => {
     
     router.push('/symptom-select') 
     
-    alert(isLogin.value ? 'ログイン成功！' : '新規登録成功！')
-    
   } catch (error) {
     console.error('エラー:', error)
     alert('エラーが発生しました。再度お試しください。')
