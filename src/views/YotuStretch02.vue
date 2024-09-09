@@ -1,110 +1,100 @@
 <template>
-    <div class="container">
-      <div class="card">
-        <h1 class="title">{{ stretchData.title }}</h1>
-        <div class="stretch-content">
-          <img :src="stretchData.imageUrl" :alt="stretchData.title" class="stretch-image">
-          <div class="instructions">
-            <p v-for="(instruction, index) in stretchData.stretchContext" :key="index">
-              {{ index + 1 }}. {{ instruction }}
-            </p>
+  <div class="container">
+    <div class="card">
+      <h1 class="title">{{ stretchData.title }}</h1>
+      <div class="stretch-content">
+        <img :src="stretchData.imageUrl" :alt="stretchData.title" class="stretch-image">
+        <div class="instructions">
+          <p v-for="(instruction, index) in stretchData.stretchContext" :key="index">
+            {{ index + 1 }}. {{ instruction }}
+          </p>
+        </div>
+        <div class="timer-display">{{ formatTime(currentTime) }}</div>
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: `${(currentTime / 40) * 100}%` }"></div>
           </div>
-          <div class="timer-display">{{ formatTime(currentTime) }}</div>
-          <div class="set-display">
-            <span v-for="(dot, index) in 4" :key="index" 
-                  :class="['set-dot', { 'active': index < currentSet }]"></span>
-          </div>
-          <div class="progress-container">
-            <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: `${(currentTime / 10) * 100}%` }"></div>
-            </div>
-          </div>
-          <div class="button-group">
-            <button @click="toggleStretch" class="button action-button">
-              {{ isActive ? '停止' : '開始' }}
-            </button>
-            <button @click="resetStretch" class="button reset-button">リセット</button>
-          </div>
+        </div>
+        <div class="button-group">
+          <button @click="toggleStretch" class="button action-button">
+            {{ isActive ? '停止' : '開始' }}
+          </button>
+          <button @click="resetStretch" class="button reset-button">リセット</button>
         </div>
       </div>
     </div>
-  </template>
-  
-  
-  <script setup>
-  import { ref, onMounted, onUnmounted } from 'vue';
-  
-  const currentTime = ref(0);
-  const currentSet = ref(0);
-  const isActive = ref(false);
-  let timer;
-  const stretchData = ref({
-    title: '',
-    imageUrl: '',
-    instructions: []
-  });
-  
-  const formatTime = (time) => {
-    const seconds = time % 60;
-    return `00:${seconds.toString().padStart(2, '0')}`;
-  };
-  
-  const fetchStretchData = async () => {
-    try {
-      const response = await fetch('https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/stretchcontent?Stretch_id=yotu-02&Severity=3');
-      const data = await response.json();
-      if (data.items && data.items.length > 0) {
-        stretchData.value = data.items[0];
-      }
-    } catch (error) {
-      console.error('Error fetching stretch data:', error);
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';  // ルーターをインポート
+
+const currentTime = ref(0);
+const isActive = ref(false);
+let timer;
+const router = useRouter();  // ルーターのインスタンスを取得
+const stretchData = ref({
+  title: '',
+  imageUrl: '',
+  instructions: []
+});
+
+const formatTime = (time) => {
+  const seconds = time % 60;
+  return `00:${seconds.toString().padStart(2, '0')}`;
+};
+
+const fetchStretchData = async () => {
+  try {
+    const response = await fetch('https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/stretchcontent?Stretch_id=yotu-02&Severity=3');
+    const data = await response.json();
+    if (data.items && data.items.length > 0) {
+      stretchData.value = data.items[0];
     }
-  };
-  
-  const toggleStretch = () => {
-    if (isActive.value) {
+  } catch (error) {
+    console.error('Error fetching stretch data:', error);
+  }
+};
+
+const toggleStretch = () => {
+  if (isActive.value) {
+    clearInterval(timer);
+    isActive.value = false;
+  } else {
+    isActive.value = true;
+    startTimer();
+  }
+};
+
+const startTimer = () => {
+  timer = setInterval(() => {
+    if (currentTime.value < 40) {
+      currentTime.value++;
+    } else {
       clearInterval(timer);
       isActive.value = false;
-    } else {
-      isActive.value = true;
-      startTimer();
+      router.push('/yotustretch03');  // タイマー終了後にページ遷移
     }
-  };
+  }, 1000);
+};
+
+const resetStretch = () => {
+  clearInterval(timer);
+  currentTime.value = 0;
+  isActive.value = false;
+};
+
+onMounted(() => {
+  fetchStretchData();
+});
+
+onUnmounted(() => {
+  clearInterval(timer);
+});
+</script>
   
-  const startTimer = () => {
-    timer = setInterval(() => {
-      if (currentTime.value < 10) {
-        currentTime.value++;
-      } else {
-        currentTime.value = 0;
-        if (currentSet.value < 4) {
-          currentSet.value++;
-        } else {
-          clearInterval(timer);
-          isActive.value = false;
-          return;
-        }
-      }
-    }, 1000);
-  };
-  
-  const resetStretch = () => {
-    clearInterval(timer);
-    currentTime.value = 0;
-    currentSet.value = 0;
-    isActive.value = false;
-  };
-  
-  onMounted(() => {
-    fetchStretchData();
-  });
-  
-  onUnmounted(() => {
-    clearInterval(timer);
-  });
-  </script>
-  
-  <style scoped>
+<style scoped>
   .container {
     height: 100vh;
     display: flex;
