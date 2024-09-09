@@ -34,11 +34,9 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const isLogin = ref(true)
-const username = ref('') // 新規登録用のユーザー名
+const username = ref('')
 const email = ref('')
 const password = ref('')
-
-// ローカルストレージからユーザーIDを取得する処理は削除しました
 
 const toggleAuthMode = () => {
   isLogin.value = !isLogin.value
@@ -75,6 +73,8 @@ const handleSubmit = async () => {
       method,
       headers: {
         'Content-Type': 'application/json',
+        // ここでmtiTokenをヘッダーに追加
+        'Authorization': `Bearer ${window.localStorage.getItem('token')}`,
       },
       body: JSON.stringify(body),
     })
@@ -85,6 +85,10 @@ const handleSubmit = async () => {
 
     const data = await response.json()
     console.log('成功:', data)
+    
+    // トークンとユーザーIDをローカルストレージに保存
+    window.localStorage.setItem('token', data.token)
+    window.localStorage.setItem('userId', username.value)
     
     router.push('/symptom-select') 
     

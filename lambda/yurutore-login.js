@@ -1,182 +1,64 @@
-<template>
-  <div class="container">
-    <div class="card">
-      <h1 class="title">ほっこりケア・フィット</h1>
-      <h2 class="subtitle">{{ isLogin ? 'ログイン' : '新規登録' }}</h2>
-      <form @submit.prevent="handleSubmit" class="form">
-        <div class="form-group" v-if="!isLogin">
-          <label for="username" class="label">ユーザー名</label>
-          <input type="text" id="username" v-model="username" class="input" required>
-        </div>
-        <div class="form-group">
-          <label for="email" class="label">メールアドレス</label>
-          <input type="email" id="email" v-model="email" class="input" required>
-        </div>
-        <div class="form-group">
-          <label for="password" class="label">パスワード</label>
-          <input type="password" id="password" v-model="password" class="input" required>
-        </div>
-        <button type="submit" class="submit-button">
-          {{ isLogin ? 'ログイン' : '新規登録' }}
-        </button>
-      </form>
-      <button @click="toggleAuthMode" class="toggle-button">
-        {{ isLogin ? '新規登録はこちらから' : 'ログインはこちらから' }}
-      </button>
-    </div>
-  </div>
-</template>
+const { DynamoDBClient, QueryCommand } = require("@aws-sdk/client-dynamodb");
+const { unmarshall, marshall } = require("@aws-sdk/util-dynamodb");
 
-<script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+const client = new DynamoDBClient({ region: "ap-northeast-1" });
+const TableName = "team2_user";
 
-const router = useRouter()
+exports.handler = async (event) => {
+  const response = {
+    statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: JSON.stringify({ message: "" }),
+  };
 
-const isLogin = ref(true)
-const username = ref('') // ユーザー名
-const email = ref('')
-const password = ref('')
+  const body = event.body ? JSON.parse(event.body) : null;
+  if (!body || !body.user_id || !body.password) {
+    response.statusCode = 400;
+    response.body = JSON.stringify({
+      message: "無効なリクエストです。request bodyに必須パラメータがセットされていません。",
+    });
 
-const toggleAuthMode = () => {
-  isLogin.value = !isLogin.value
-  username.value = ''
-  email.value = ''
-  password.value = ''
-}
-
-const handleSubmit = async () => {
-  try {
-    let url = ''
-    let method = ''
-    let body = {}
-
-    if (isLogin.value) {
-      // ログイン処理
-      url = 'https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/login'
-      method = 'POST'
-      body = { user_id: username.value, password: password.value } // ユーザー名とパスワード
-    } else {
-      // 新規登録処理
-      url = 'https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/signup'
-      method = 'POST'
-      body = { user_id: username.value, email: email.value, password: password.value } // ユーザー名、メールアドレス、パスワード
-    }
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
-
-    if (!response.ok) {
-      throw new Error(`エラーが発生しました: ${response.statusText}`)
-    }
-
-    const data = await response.json()
-    console.log('成功:', data)
-    
-    router.push('/symptom-select') 
-    
-    alert(isLogin.value ? 'ログイン成功！' : '新規登録成功！')
-    
-  } catch (error) {
-    console.error('エラー:', error)
-    alert('エラーが発生しました。再度お試しください。')
+    return response;
   }
-}
-</script>
 
-<style scoped>
-.container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff0f5;
-}
+  const { user_id, password } = body;
 
-.card {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 24rem;
-}
+  const param = {
+    TableName,
+    KeyConditionExpression: "user_id = :uid",
+    ExpressionAttributeValues: marshall({
+      ":uid": user_id,
+    }),
+  };
 
-.title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #8a2be2;
-}
+  const command = new QueryCommand(param);
+  try {
+    const { Items } = await client.send(command);
 
-.subtitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
+    if (Items.length === 0) {
+      throw new Error("ユーザーIDが見つかりません");
+    }
 
-.form {
-  margin-bottom: 1rem;
-}
+    const user = unmarshall(Items[0]);
+    if (user.password !== password) {
+      throw new Error("パスワードが一致しません");
+    }
 
-.form-group {
-  margin-bottom: 1rem;
-}
+    response.body = JSON.stringify({ token: "mtiToken" });
+  } catch (e) {
+    if (e.message === "ユーザーIDが見つかりません" || e.message === "パスワードが一致しません") {
+      response.statusCode = 401;
+      response.body = JSON.stringify({ message: e.message });
+    } else {
+      response.statusCode = 500;
+      response.body = JSON.stringify({
+        message: "予期せぬエラーが発生しました。",
+        errorDetail: e.toString(),
+      });
+    }
+  }
 
-.label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #4a5568;
-  margin-bottom: 0.25rem;
-}
-
-.input {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-}
-
-.submit-button {
-  width: 100%;
-  background-color: #8a2be2;
-  color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.submit-button:hover {
-  background-color: #7a1fd6;
-}
-
-.toggle-button {
-  width: 100%;
-  background-color: transparent;
-  color: #8a2be2;
-  padding: 0.5rem;
-  border: 1px solid #8a2be2;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.toggle-button:hover {
-  background-color: #8a2be2;
-  color: white;
-}
-</style>
+  return response;
+};

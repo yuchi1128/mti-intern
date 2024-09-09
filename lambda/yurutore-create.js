@@ -37,10 +37,10 @@ exports.handler = async (event, context) => {
 
     // client.send()でDBにデータを登録するコマンドを実行
     await client.send(command);
-
+    
     // 登録に成功した場合の処理
     response.statusCode = 201;
-    response.body = JSON.stringify({ user_id });
+    response.body = JSON.stringify({ user_id, token: "mtiToken" });
   } catch (e) {
     console.error(e);
     response.statusCode = 500;
