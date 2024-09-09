@@ -59,7 +59,7 @@ const submitForm = async () => {
     return;
   }
 
-  const userId = localStorage.getItem("user_id");
+  const userId = localStorage.getItem("userId");
   if (!userId) {
     alert("ユーザーIDが見つかりません");
     return;
