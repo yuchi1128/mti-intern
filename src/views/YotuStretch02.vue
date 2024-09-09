@@ -15,6 +15,11 @@
             <div class="progress-fill" :style="{ width: `${(currentTime / 40) * 100}%` }"></div>
           </div>
         </div>
+        <div class="set-display">
+          <div class="set-dot"></div>
+          <div class="set-dot active"></div>
+          <div class="set-dot"></div>
+        </div>
         <div class="button-group">
           <button @click="toggleStretch" class="button action-button">
             {{ isActive ? '停止' : '開始' }}
