@@ -13,7 +13,7 @@ exports.handler = async (event) => {
     body: JSON.stringify({ message: "" }),
   };
 
-  // デバッグ用にeventをログに出力
+  // デバッグ用にeventをログに出力する
   console.log("Event:", JSON.stringify(event, null, 2));
 
   // クエリパラメータの取得
