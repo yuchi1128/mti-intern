@@ -28,10 +28,13 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const currentTime = ref(0);
 const isActive = ref(false);
 let timer;
+let audio; // 音楽オブジェクト
 const stretchData = ref({
   title: '',
   imageUrl: '',
@@ -40,7 +43,8 @@ const stretchData = ref({
 
 const formatTime = (time) => {
   const seconds = time % 60;
-  return `00:${seconds.toString().padStart(2, '0')}`;
+  const minutes = Math.floor(time / 60);
+  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
 const fetchStretchData = async () => {
@@ -59,9 +63,11 @@ const toggleStretch = () => {
   if (isActive.value) {
     clearInterval(timer);
     isActive.value = false;
+    stopMusic();  // 音楽を停止
   } else {
     isActive.value = true;
     startTimer();
+    playMusic();  // 音楽を再生
   }
 };
 
@@ -72,6 +78,8 @@ const startTimer = () => {
     } else {
       clearInterval(timer);
       isActive.value = false;
+      stopMusic();  // 音楽を停止
+      router.push('/yotustretch02');
     }
   }, 1000);
 };
@@ -80,6 +88,19 @@ const resetStretch = () => {
   clearInterval(timer);
   currentTime.value = 0;
   isActive.value = false;
+  stopMusic();  // 音楽を停止
+};
+
+const playMusic = () => {
+  audio = new Audio('/music/1.mp3'); // .mp3ファイルのパス
+  audio.play();
+};
+
+const stopMusic = () => {
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0; // 音楽をリセット
+  }
 };
 
 onMounted(() => {
@@ -88,6 +109,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   clearInterval(timer);
+  stopMusic();  // 音楽を停止
 });
 </script>
   
