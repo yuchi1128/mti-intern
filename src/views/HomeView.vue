@@ -86,6 +86,7 @@ const formatDate = (date) => {
 };
 
 const startStretch = () => {
+  router.push('/katakoristretch01') 
   console.log('ストレッチを開始します');
 };
 
