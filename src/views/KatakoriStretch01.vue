@@ -15,6 +15,14 @@
             <div class="progress-fill" :style="{ width: `${(currentTime / 40) * 100}%` }"></div>
           </div>
         </div>
+        
+        <!-- ページ番号のドット表示 -->
+        <div class="set-display">
+          <div class="set-dot active"></div>
+          <div class="set-dot"></div>
+          <div class="set-dot"></div>
+        </div>
+
         <div class="button-group">
           <button @click="toggleStretch" class="button action-button">
             {{ isActive ? '停止' : '開始' }}
@@ -117,7 +125,7 @@ onUnmounted(() => {
   stopMusic();  // 音楽を停止
 });
 </script>
-  
+
 <style scoped>
   .container {
     height: 100vh;
@@ -177,6 +185,24 @@ onUnmounted(() => {
     padding-bottom:20px
   }
   
+  .progress-container {
+    width: 90%;
+    margin-bottom: 1.5rem;
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background-color: #e0d0ff;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background-color: #5600e8;
+    transition: width 1s linear;
+  }
+  
   .set-display {
     display: flex;
     justify-content: center;
@@ -194,24 +220,6 @@ onUnmounted(() => {
   
   .set-dot.active {
     background-color: #6a0dad;
-  }
-  
-  .progress-container {
-    width: 90%;
-    margin-bottom: 1.5rem;
-  }
-  
-  .progress-bar {
-    height: 8px;
-    background-color: #e0d0ff;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  
-  .progress-fill {
-    height: 100%;
-    background-color: #5600e8;
-    transition: width 1s linear;
   }
   
   .button-group {
@@ -255,19 +263,19 @@ onUnmounted(() => {
   }
   
   .next-stretch-button {
-  background-color: #8a2be2;
-  color: white;
-  padding: 1rem;
-  font-size: 1.2rem;
-  border-radius: 10px;
-  margin-top: 20px;
-  width: 100%;
-  text-align: center;
-  font-weight: bold;
-  cursor: pointer;
+    background-color: #8a2be2;
+    color: white;
+    padding: 1rem;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
   }
   
   .next-stretch-button:hover {
     background-color: #7a1fd6;
   }
-  </style>
+</style>
