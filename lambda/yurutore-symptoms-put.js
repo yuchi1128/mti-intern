@@ -36,7 +36,8 @@ exports.handler = async (event, context) => {
     return response;
   }
 
-  const { user_id, SymptomId, SymptomDetails, ActionsTaken, Note } = body;
+  const { user_id, SymptomId, SymptomDetails, ActionsTaken = [], Note = "" } = body;
+  const Timestamp = new Date().toISOString();
 
   // DynamoDB に保存するためのパラメータ
   const param = {
@@ -45,11 +46,18 @@ exports.handler = async (event, context) => {
       user_id: user_id,  // リクエストから取得したユーザーIDを使用
       SymptomId: SymptomId,
     }),
-    UpdateExpression: "SET SymptomDetails = :sd, ActionsTaken = :at, Note = :n",
+    UpdateExpression: "SET #sd = :sd, #at = :at, #n = :n, #ts = :ts",
+    ExpressionAttributeNames: {
+      "#sd": "SymptomDetails",
+      "#at": "ActionsTaken",
+      "#n": "Note",
+      "#ts": "Timestamp",
+    },
     ExpressionAttributeValues: marshall({
       ":sd": SymptomDetails,
       ":at": ActionsTaken,
       ":n": Note || "",
+      ":ts": Timestamp,
     }),
     ReturnValues: "ALL_NEW",  // 更新後のアイテムを返す
   };
