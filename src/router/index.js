@@ -4,6 +4,7 @@ import Stretch from '../views/Stretch.vue'
 import Home2 from '../views/Home2.vue'
 import Login from '../views/Login.vue'
 import SymptomSelect from '../views/SymptomSelect.vue'
+import StretchRecord from '../views/StretchRecord.vue'
 // import Profile from '../views/Profile.vue'
 // import User from '../views/User.vue'
 // import ArticleView from '../views/ArticleView.vue'
@@ -49,6 +50,14 @@ const router = createRouter({
       component: SymptomSelect,
       meta: {
         title: 'SymptomSelect'
+      }
+    },
+    {
+      path: '/stretch-record',
+      name: 'StretchRecord',
+      component: StretchRecord,
+      meta: {
+        title: 'StretchRecord'
       }
     },
     // {
