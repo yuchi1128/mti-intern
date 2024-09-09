@@ -8,6 +8,9 @@ const TableName = "team2_user_symptoms";
 // 固定の認証トークン
 const VALID_TOKEN = "mtiToken";
 
+// UUIDを生成する関数
+const generateSymptomId = () => crypto.randomUUID();
+
 exports.handler = async (event, context) => {
   const response = {
     statusCode: 200,
@@ -26,36 +29,34 @@ exports.handler = async (event, context) => {
     });
     return response;
   }
+
   // リクエストボディのパース
   const body = event.body ? JSON.parse(event.body) : null;
-  if (!body || !body.user_id || !body.SymptomId || !body.SymptomDetails) {
+  if (!body || !body.user_id || !body.SymptomDetails) {
       response.statusCode = 400;
       response.body = JSON.stringify({ message: "無効なリクエストです。必須フィールドが不足しています。" });
       return response;
   }
-  
-  //const { user_id, SymptomId, fatigue_level = null, SymptomDetails, ActionsTaken = [], Note = "" } = body;
-  const { user_id, SymptomId = null, SymptomDetails = [] } = body;
-  //const Timestamp = new Date().toISOString();
-  
+
+  // SymptomIdを自動生成
+  const { user_id, SymptomDetails = [] } = body;
+  const SymptomId = generateSymptomId();
+
   const param = {
       TableName,
       Item: marshall({
           user_id: user_id,
           SymptomId: SymptomId,
           SymptomDetails: SymptomDetails,
-          //ActionsTaken: ActionsTaken,
-          //fatigue_level: fatigue_level,
-          //Note: Note,
-          //Timestamp: Timestamp,
       }),
   };
-  
+
   const command = new PutItemCommand(param);
-  
+
   try {
       await client.send(command);
-      response.body = JSON.stringify({ message: "症状の記録が正常に保存されました。" });
+      response.body = JSON.stringify({ message: "症状の記録が正常に保存されました。", SymptomId: SymptomId});
+      
   } catch (e) {
     response.statusCode = 500;
     response.body = JSON.stringify({
