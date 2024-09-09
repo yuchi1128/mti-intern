@@ -79,7 +79,7 @@ const startTimer = () => {
       clearInterval(timer);
       isActive.value = false;
       stopMusic();  // 音楽を停止
-      router.push('/yotustretch02');
+      //router.push('/');
     }
   }, 1000);
 };
