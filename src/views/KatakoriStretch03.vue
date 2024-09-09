@@ -105,7 +105,7 @@ const stopMusic = () => {
 };
 
 const goToNextStretch = () => {
-  //router.push('/yotustretch02');
+  router.push('/stretch-record');
 };
 
 onMounted(() => {
