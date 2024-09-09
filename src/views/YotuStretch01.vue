@@ -26,6 +26,75 @@
   </div>
 </template>
 
+<!--<script setup>-->
+<!--import { ref, onMounted, onUnmounted } from 'vue';-->
+<!--import { useRouter } from 'vue-router';-->
+
+<!--const router = useRouter();-->
+<!--const currentTime = ref(0);-->
+<!--const isActive = ref(false);-->
+<!--let timer;-->
+<!--const stretchData = ref({-->
+<!--  title: '',-->
+<!--  imageUrl: '',-->
+<!--  instructions: []-->
+<!--});-->
+
+<!--const formatTime = (time) => {-->
+<!--  const seconds = time % 60;-->
+<!--  const minutes = Math.floor(time / 60);-->
+<!--  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;-->
+<!--};-->
+
+<!--const fetchStretchData = async () => {-->
+<!--  try {-->
+<!--    const response = await fetch('https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/stretchcontent?Stretch_id=yotu-01&Severity=3');-->
+<!--    const data = await response.json();-->
+<!--    if (data.items && data.items.length > 0) {-->
+<!--      stretchData.value = data.items[0];-->
+<!--    }-->
+<!--  } catch (error) {-->
+<!--    console.error('Error fetching stretch data:', error);-->
+<!--  }-->
+<!--};-->
+
+<!--const toggleStretch = () => {-->
+<!--  if (isActive.value) {-->
+<!--    clearInterval(timer);-->
+<!--    isActive.value = false;-->
+<!--  } else {-->
+<!--    isActive.value = true;-->
+<!--    startTimer();-->
+<!--  }-->
+<!--};-->
+
+<!--const startTimer = () => {-->
+<!--  timer = setInterval(() => {-->
+<!--    if (currentTime.value < 40) {-->
+<!--      currentTime.value++;-->
+<!--    } else {-->
+<!--      clearInterval(timer);-->
+<!--      isActive.value = false;-->
+<!--      router.push('/yotustretch02');-->
+<!--    }-->
+<!--  }, 1000);-->
+<!--};-->
+
+<!--const resetStretch = () => {-->
+<!--  clearInterval(timer);-->
+<!--  currentTime.value = 0;-->
+<!--  isActive.value = false;-->
+<!--};-->
+
+<!--onMounted(() => {-->
+<!--  fetchStretchData();-->
+<!--});-->
+
+<!--onUnmounted(() => {-->
+<!--  clearInterval(timer);-->
+<!--});-->
+<!--</script>-->
+
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -34,6 +103,7 @@ const router = useRouter();
 const currentTime = ref(0);
 const isActive = ref(false);
 let timer;
+let audio; // 音楽オブジェクト
 const stretchData = ref({
   title: '',
   imageUrl: '',
@@ -62,9 +132,11 @@ const toggleStretch = () => {
   if (isActive.value) {
     clearInterval(timer);
     isActive.value = false;
+    stopMusic();  // 音楽を停止
   } else {
     isActive.value = true;
     startTimer();
+    playMusic();  // 音楽を再生
   }
 };
 
@@ -75,6 +147,7 @@ const startTimer = () => {
     } else {
       clearInterval(timer);
       isActive.value = false;
+      stopMusic();  // 音楽を停止
       router.push('/yotustretch02');
     }
   }, 1000);
@@ -84,6 +157,19 @@ const resetStretch = () => {
   clearInterval(timer);
   currentTime.value = 0;
   isActive.value = false;
+  stopMusic();  // 音楽を停止
+};
+
+const playMusic = () => {
+  audio = new Audio('/music/1.mp3'); // .mp3ファイルのパス
+  audio.play();
+};
+
+const stopMusic = () => {
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0; // 音楽をリセット
+  }
 };
 
 onMounted(() => {
@@ -92,8 +178,10 @@ onMounted(() => {
 
 onUnmounted(() => {
   clearInterval(timer);
+  stopMusic();  // 音楽を停止
 });
 </script>
+
 
 <style scoped>
   .container {
