@@ -13,8 +13,14 @@ exports.handler = async (event) => {
     body: JSON.stringify({ message: "" }),
   };
 
+  // デバッグ用にeventをログに出力
+  console.log("Event:", JSON.stringify(event, null, 2));
+
   // クエリパラメータの取得
   const { Stretch_id, Severity } = event.queryStringParameters || {};
+
+  console.log("Stretch_id:", Stretch_id);
+  console.log("Severity:", Severity);
 
   if (!Stretch_id || !Severity) {
     response.statusCode = 400;
@@ -29,8 +35,15 @@ exports.handler = async (event) => {
     TableName,
     KeyConditionExpression: "Stretch_id = :stretch_id AND Severity = :severity",
     ExpressionAttributeValues: {
-      ":stretch_id": { S: Stretch_id },  // Stretch_idを文字列として渡す
-      ":severity": { N: Severity }       // Severityを数値として渡す
+      ":stretch_id": { S: Stretch_id },
+      ":severity": { N: Severity }
+    },
+    ProjectionExpression: "#symptom, #imageUrl, #duration, #stretchContext", // 別名を指定
+    ExpressionAttributeNames: {
+      "#symptom": "Symptom",
+      "#imageUrl": "ImageURLs",
+      "#duration": "Duration",   // 予約語に別名を付ける
+      "#stretchContext": "Stretch_context"
     }
   };
 
@@ -42,14 +55,14 @@ exports.handler = async (event) => {
       });
     } else {
       const items = data.Items.map(item => ({
-        symptom: item.Symptom ? item.Symptom.S : null, // Symptomが存在する場合は文字列として取得
-        imageUrl: item.ImageURLs ? item.ImageURLs.S : null, // ImageURLsが存在する場合は文字列として取得
-        duration: item.Duration ? parseInt(item.Duration.N, 10) : null, // Durationが存在する場合は数値に変換
-        stretchContext: item.Stretch_context ? item.Stretch_context.SS : [] // Stretch_contextが存在する場合は配列として取得
+        symptom: item.Symptom ? item.Symptom.S : null,
+        imageUrl: item.ImageURLs ? item.ImageURLs.S : null,
+        duration: item.Duration ? parseInt(item.Duration.N, 10) : null,
+        stretchContext: item.Stretch_context ? item.Stretch_context.L.map(c => c.S) : [] // Stretch_contextを文字列の配列に変換
       }));
 
       response.body = JSON.stringify({
-        items, // 取得したデータをそのまま返す
+        items,
       });
     }
   } catch (error) {
