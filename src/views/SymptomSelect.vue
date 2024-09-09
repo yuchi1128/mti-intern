@@ -93,9 +93,9 @@ const submitForm = async () => {
     }
 
     // 症状に基づくページ遷移の条件分岐
-    if (bodyIssue.value === "肩こり") {
+    if (bodyIssue.value === "腰痛") {
       router.push('/katakoristretch01');
-    } else if (bodyIssue.value === "腰痛") {
+    } else if (bodyIssue.value === "肩こり") {
       router.push('/yotustretch01');
     } else {
       router.push('/stretch');  // 他の症状に対するデフォルトの遷移
