@@ -107,7 +107,6 @@ const submitForm = async () => {
     const symptomId = data.SymptomId;
     window.localStorage.setItem("SymtomId", symptomId);
     
-    alert("送信が完了しました");
   } catch (error) {
     console.error("送信エラー:", error);
     alert("送信に失敗しました");
