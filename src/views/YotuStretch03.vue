@@ -21,6 +21,7 @@
           </button>
           <button @click="resetStretch" class="button reset-button">リセット</button>
         </div>
+        <button @click="goToNextStretch" class="button next-stretch-button">ストレッチを終了する</button>
       </div>
     </div>
   </div>
@@ -101,6 +102,10 @@ const stopMusic = () => {
     audio.pause();
     audio.currentTime = 0; // 音楽をリセット
   }
+};
+
+const goToNextStretch = () => {
+  //router.push('/yotustretch03');
 };
 
 onMounted(() => {
@@ -247,5 +252,22 @@ onUnmounted(() => {
   
   .reset-button:hover {
     background-color: #e6d8ff;
+  }
+
+  .next-stretch-button {
+  background-color: #8a2be2;
+  color: white;
+  padding: 1rem;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  }
+  
+  .next-stretch-button:hover {
+    background-color: #7a1fd6;
   }
   </style>
