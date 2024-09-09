@@ -133,6 +133,7 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     background-color: #f0e6ff;
+    overflow: auto; /* Add this line for scrolling */
   }
   
   .card {
@@ -142,6 +143,9 @@ onUnmounted(() => {
     padding: 2rem;
     width: 100%;
     max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .title {
@@ -156,6 +160,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-grow: 1; /* Allow stretching content to grow and support scrolling */
   }
   
   .stretch-image {

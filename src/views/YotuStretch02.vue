@@ -131,6 +131,7 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     background-color: #f0e6ff;
+    overflow: auto; /* Add this line for scrolling */
   }
   
   .card {
@@ -140,6 +141,9 @@ onUnmounted(() => {
     padding: 2rem;
     width: 100%;
     max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .title {
@@ -154,6 +158,7 @@ onUnmounted(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-grow: 1; /* Allow stretching content to grow and support scrolling */
   }
   
   .stretch-image {
@@ -183,6 +188,24 @@ onUnmounted(() => {
     padding-bottom:20px
   }
   
+  .progress-container {
+    width: 90%;
+    margin-bottom: 1.5rem;
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background-color: #e0d0ff;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background-color: #5600e8;
+    transition: width 1s linear;
+  }
+  
   .set-display {
     display: flex;
     justify-content: center;
@@ -200,24 +223,6 @@ onUnmounted(() => {
   
   .set-dot.active {
     background-color: #6a0dad;
-  }
-  
-  .progress-container {
-    width: 90%;
-    margin-bottom: 1.5rem;
-  }
-  
-  .progress-bar {
-    height: 8px;
-    background-color: #e0d0ff;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  
-  .progress-fill {
-    height: 100%;
-    background-color: #5600e8;
-    transition: width 1s linear;
   }
   
   .button-group {
@@ -261,19 +266,19 @@ onUnmounted(() => {
   }
   
   .next-stretch-button {
-  background-color: #8a2be2;
-  color: white;
-  padding: 1rem;
-  font-size: 1.2rem;
-  border-radius: 10px;
-  margin-top: 20px;
-  width: 100%;
-  text-align: center;
-  font-weight: bold;
-  cursor: pointer;
+    background-color: #8a2be2;
+    color: white;
+    padding: 1rem;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
   }
   
   .next-stretch-button:hover {
     background-color: #7a1fd6;
   }
-  </style>
+</style>
