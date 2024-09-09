@@ -45,6 +45,9 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const concern = ref('腰痛');
 const stretchContent = ref('腰のストレッチ');
@@ -52,13 +55,12 @@ const fatigueImprovement = ref(null);
 const impression = ref('');
 
 const submitForm = () => {
-  console.log({
-    concern: concern.value,
-    stretchContent: stretchContent.value,
-    fatigueImprovement: fatigueImprovement.value,
-    impression: impression.value
-  });
-  // 送信後の処理（例：確認メッセージの表示、フォームのリセットなど）
+  console.log("フォームが送信されました");
+  console.log("疲労感の改善度:", fatigueImprovement.value);
+  console.log("今日の感想:", impression.value);
+
+  // /home-view へ遷移
+  router.push('/home-view');
 };
 </script>
 
