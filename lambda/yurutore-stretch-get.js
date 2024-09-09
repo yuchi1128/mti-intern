@@ -36,29 +36,33 @@ exports.handler = async (event) => {
     KeyConditionExpression: "Stretch_id = :stretch_id AND Severity = :severity",
     ExpressionAttributeValues: {
       ":stretch_id": { S: Stretch_id },
-      ":severity": { N: Severity }
+      ":severity": { N: Severity.toString() } // Severityは数値で、文字列に変換する必要があります
     },
-    ProjectionExpression: "#symptom, #imageUrl, #duration, #stretchContext", // 別名を指定
+    ProjectionExpression: "#symptom, #imageUrl, #duration, #stretchContext, #title",
     ExpressionAttributeNames: {
       "#symptom": "Symptom",
       "#imageUrl": "ImageURLs",
-      "#duration": "Duration",   // 予約語に別名を付ける
-      "#stretchContext": "Stretch_context"
+      "#duration": "Duration",
+      "#stretchContext": "Stretch_context",
+      "#title": "title"
     }
   };
 
   try {
     const data = await client.send(new QueryCommand(params));
+    console.log("DynamoDB Response Data:", JSON.stringify(data, null, 2)); // DynamoDBのレスポンスデータをログに出力
+
     if (data.Items.length === 0) {
       response.body = JSON.stringify({
-        message: "指定されたStretch_idとSeverityに該当するデータが見つかりません。",
+        message: "指定されたStretch_idに該当するデータが見つかりません。",
       });
     } else {
       const items = data.Items.map(item => ({
         symptom: item.Symptom ? item.Symptom.S : null,
         imageUrl: item.ImageURLs ? item.ImageURLs.S : null,
         duration: item.Duration ? parseInt(item.Duration.N, 10) : null,
-        stretchContext: item.Stretch_context ? item.Stretch_context.L.map(c => c.S) : [] // Stretch_contextを文字列の配列に変換
+        stretchContext: item.Stretch_context ? item.Stretch_context.L.map(c => c.S) : [], // Stretch_contextを文字列の配列に変換
+        title: item.title ? item.title.S : null // title を追加
       }));
 
       response.body = JSON.stringify({
@@ -66,6 +70,7 @@ exports.handler = async (event) => {
       });
     }
   } catch (error) {
+    console.error("Error:", error); // エラーの詳細をログに出力
     response.statusCode = 500;
     response.body = JSON.stringify({
       message: "ストレッチ内容の取得に失敗しました。",
