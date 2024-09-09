@@ -5,16 +5,14 @@ import Home2 from '../views/Home2.vue'
 import Login from '../views/Login.vue'
 import SymptomSelect from '../views/SymptomSelect.vue'
 import StretchRecord from '../views/StretchRecord.vue'
-<<<<<<< Updated upstream
 import YotuStretch01 from '../views/YotuStretch01.vue'
 import YotuStretch02 from '../views/YotuStretch02.vue'
 import YotuStretch03 from '../views/YotuStretch03.vue'
 import KatakoriStretch01 from '../views/KatakoriStretch01.vue'
 import KatakoriStretch02 from '../views/KatakoriStretch02.vue'
 import KatakoriStretch03 from '../views/KatakoriStretch03.vue'
-=======
 import HomeView from '../views/HomeView.vue'
->>>>>>> Stashed changes
+import SampleHome from '../views/SampleHome.vue'
 // import Profile from '../views/Profile.vue'
 // import User from '../views/User.vue'
 // import ArticleView from '../views/ArticleView.vue'
@@ -71,14 +69,22 @@ const router = createRouter({
       }
     },
     {
-<<<<<<< Updated upstream
-      path: '/stretch-record',
-      name: 'StretchRecord',
-      component: StretchRecord,
+      path: '/home-view',
+      name: 'HomeView',
+      component: HomeView,
       meta: {
-        title: 'StretchRecord'
+        title: 'HomeView'
       }
     },
+    {
+      path: '/sample-home',
+      name: 'SampleHome',
+      component: SampleHome,
+      meta: {
+        title: 'SampleHome'
+      }
+    },
+    ///
     {
       path: '/yotustretch01',
       name: 'YotuStretch01',
@@ -125,15 +131,11 @@ const router = createRouter({
       component: KatakoriStretch03,
       meta: {
         title: 'KatakoriStretch03'
-=======
-      path: '/home-view',
-      name: 'HomeView',
-      component: HomeView,
-      meta: {
-        title: 'HomeView'
->>>>>>> Stashed changes
       }
     },
+    
+    
+    
     // {
     //   path: '/profile',
     //   name: 'Profile',

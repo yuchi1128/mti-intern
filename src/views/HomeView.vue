@@ -56,6 +56,9 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const recommendedStretch = ref({
   name: '肩こり解消ストレッチ',
@@ -87,6 +90,7 @@ const startStretch = () => {
 };
 
 const goToSymptomPage = () => {
+  router.push('/symptom-select') 
   console.log('症状別ストレッチページに遷移します');
   // ここに症状別ストレッチページへの遷移ロジックを追加
 };
@@ -139,6 +143,8 @@ const nextMonth = () => {
   margin: 0 auto;
   padding: 20px;
   font-family: 'Arial', sans-serif;
+  background-color:#EFE5FF;
+
 }
 
 .header {
