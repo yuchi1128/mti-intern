@@ -98,7 +98,7 @@ const submitForm = async () => {
     } else if (bodyIssue.value === "肩こり") {
       router.push('/yotustretch01');
     } else {
-      router.push('/stretch');  // 他の症状に対するデフォルトの遷移
+      router.push('/');  // 他の症状に対するデフォルトの遷移
     }
 
     const data = await response.json();
