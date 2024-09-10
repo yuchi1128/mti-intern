@@ -166,9 +166,13 @@ onUnmounted(() => {
   .stretch-image {
     width: 200px;
     height: 200px;
-    object-fit: cover;
+    /*object-fit: cover;*/
+    object-fit: contain;
+    transform: scale(1.5);
+    transform-origin: center;
     border-radius: 10px;
     margin-bottom: 1rem;
+    /*border: solid 1px #777777;*/
   }
   
   .instructions {
