@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="card">
+      <h1 class="congrats">お疲れ様でした！！</h1>
       <h1 class="title">今日の振り返り</h1>
       <form @submit.prevent="submitForm" class="reflection-form">
         <div class="info-section">
@@ -81,6 +82,14 @@ const submitForm = () => {
   padding: 2rem;
   width: 100%;
   max-width: 380px;
+}
+
+.congrats {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ff4081;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .title {
