@@ -90,7 +90,7 @@ const handleSubmit = async () => {
     window.localStorage.setItem('token', data.token)
     window.localStorage.setItem('userId', username.value)
     
-    router.push('/symptom-select') 
+    router.push('/home-view') 
     
   } catch (error) {
     console.error('エラー:', error)
