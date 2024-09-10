@@ -221,8 +221,8 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const recommendedStretch = ref({
-  name: '肩こり解消ストレッチ',
-  description: '肩と首の緊張をほぐし、血行を促進するストレッチです。デスクワークの合間にもおすすめです。',
+  name: '腰痛解消ストレッチ',
+  description: '腰痛の痛みを緩和し、血行を促進するストレッチです。デスクワークの合間にもおすすめです。',
   image: '/placeholder.svg?height=200&width=200'
 });
 
