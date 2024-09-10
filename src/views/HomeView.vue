@@ -1,8 +1,167 @@
+<!--<template>-->
+<!--  <div class="container">-->
+<!--    <header class="header">-->
+<!--      <h1>更年期ストレッチサポート</h1>-->
+<!--      <button @click="logout" class="logout-button">ログアウト</button>-->
+<!--    </header>-->
+<!--    <main class="main-content">-->
+<!--      <section class="recommended-stretch">-->
+<!--        <h2>今日のおすすめストレッチ</h2>-->
+<!--        <div class="stretch-card">-->
+<!--          <div class="stretch-details">-->
+<!--            <h3>{{ recommendedStretch.name }}</h3>-->
+<!--            <p>{{ recommendedStretch.description }}</p>-->
+<!--            <button @click="startStretch" class="start-button">ストレッチを始める</button>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </section>-->
+<!--      <section class="symptom-based-stretch">-->
+<!--        <h2>改善したい症状から始める</h2>-->
+<!--        <p>症状や深刻度に応じて、適切なストレッチを行うことができます。あなたの状態に合わせたストレッチプランを提案します。</p>-->
+<!--        <button @click="goToSymptomPage" class="start-button">症状別ストレッチを探す</button>-->
+<!--      </section>-->
+<!--      <section class="past-stretches">-->
+<!--        <h2>最近のストレッチ記録</h2>-->
+<!--        <div v-if="recentStretches.length > 0" class="stretch-list">-->
+<!--          <div v-for="stretch in recentStretches" :key="stretch.date" class="past-stretch-item">-->
+<!--            <div class="past-stretch-date">{{ formatDate(stretch.date) }}</div>-->
+<!--            <div class="past-stretch-content">-->
+<!--              <h4>{{ stretch.name }}</h4>-->
+<!--              <p><strong>感想:</strong> {{ stretch.impression }}</p>-->
+<!--              <p><strong>疲労改善度:</strong> {{ stretch.fatigueImprovement }}/5</p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <p v-else>まだストレッチの記録がありません。今日から始めましょう！</p>-->
+<!--      </section>-->
+<!--      <section class="stretch-calendar">-->
+<!--        <h2>ストレッチカレンダー</h2>-->
+<!--        <div class="calendar">-->
+<!--          <div class="calendar-header">-->
+<!--            <button @click="previousMonth" class="calendar-nav">&lt;</button>-->
+<!--            <h3>{{ currentMonthYear }}</h3>-->
+<!--            <button @click="nextMonth" class="calendar-nav">&gt;</button>-->
+<!--          </div>-->
+<!--          <div class="calendar-days">-->
+<!--            <div v-for="day in ['日', '月', '火', '水', '木', '金', '土']" :key="day" class="calendar-day-header">{{ day }}</div>-->
+<!--            <div v-for="day in calendarDays" :key="day.date" -->
+<!--                 :class="['calendar-day', { 'has-stretch': day.hasStretch, 'other-month': day.otherMonth }]">-->
+<!--              {{ day.date.getDate() }}-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </section>-->
+<!--    </main>-->
+<!--  </div>-->
+<!--</template>-->
+
+<!--<script setup>-->
+<!--import { ref, computed } from 'vue';-->
+<!--import { useRouter } from 'vue-router';-->
+
+<!--const router = useRouter();-->
+
+<!--const logout = () => {-->
+  // ログアウト処理をここに実装
+<!--  console.log('ログアウト処理を実行');-->
+
+  // ローカルストレージのクリア
+  localStorage.removeItem('userId'); // ユーザーIDを削除
+  localStorage.removeItem('token'); // 認証トークンを削除
+<!--  localStorage.removeItem('SymtomId');-->
+<!--  localStorage.removeItem('user_id');-->
+  
+  // セッションストレージのクリア（必要に応じて）
+  sessionStorage.removeItem('userId'); // ユーザーIDを削除（セッションストレージに保存している場合）
+  sessionStorage.removeItem('token'); // 認証トークンを削除（セッションストレージに保存している場合）
+
+  // ログインページへリダイレクト
+<!--  router.push('/login');-->
+<!--};-->
+
+
+<!--const recommendedStretch = ref({-->
+<!--  name: '肩こり解消ストレッチ',-->
+<!--  description: '肩と首の緊張をほぐし、血行を促進するストレッチです。デスクワークの合間にもおすすめです。',-->
+<!--  image: '/placeholder.svg?height=200&width=200'-->
+<!--});-->
+
+<!--const allStretches = ref([-->
+<!--  { date: new Date(2023, 4, 15), name: '腰痛改善ストレッチ', impression: 'とても効果を感じました。腰の張りが和らぎました。', fatigueImprovement: 4 },-->
+<!--  { date: new Date(2023, 4, 14), name: '肩こり解消ストレッチ', impression: '肩の凝りがだいぶ軽くなりました。毎日続けたいです。', fatigueImprovement: 5 },-->
+<!--  { date: new Date(2023, 4, 13), name: '全身リラックスストレッチ', impression: '全身の疲れが取れた感じがします。', fatigueImprovement: 4 },-->
+<!--  { date: new Date(2023, 4, 10), name: '足のむくみ解消ストレッチ', impression: '足の軽さが違います。続けていきたいです。', fatigueImprovement: 5 },-->
+<!--]);-->
+
+<!--const recentStretches = computed(() => {-->
+<!--  return allStretches.value.slice(0, 3);-->
+<!--});-->
+
+<!--const formatDate = (date) => {-->
+<!--  return new Intl.DateTimeFormat('ja-JP', { -->
+<!--    year: 'numeric', -->
+<!--    month: 'long', -->
+<!--    day: 'numeric' -->
+<!--  }).format(date);-->
+<!--};-->
+
+<!--const startStretch = () => {-->
+<!--  router.push('/katakoristretch01');-->
+<!--  console.log('ストレッチを開始します');-->
+<!--};-->
+
+<!--const goToSymptomPage = () => {-->
+<!--  router.push('/symptom-select');-->
+<!--  console.log('症状別ストレッチページに遷移します');-->
+<!--};-->
+
+<!--const currentDate = ref(new Date());-->
+
+<!--const currentMonthYear = computed(() => {-->
+<!--  return new Intl.DateTimeFormat('ja-JP', { year: 'numeric', month: 'long' }).format(currentDate.value);-->
+<!--});-->
+
+<!--const calendarDays = computed(() => {-->
+<!--  const year = currentDate.value.getFullYear();-->
+<!--  const month = currentDate.value.getMonth();-->
+<!--  const firstDay = new Date(year, month, 1);-->
+<!--  const lastDay = new Date(year, month + 1, 0);-->
+  
+<!--  const days = [];-->
+<!--  const startDay = firstDay.getDay();-->
+<!--  const endDate = lastDay.getDate();-->
+
+<!--  for (let i = 0; i < 42; i++) {-->
+<!--    const date = new Date(year, month, i - startDay + 1);-->
+<!--    days.push({-->
+<!--      date: date,-->
+<!--      hasStretch: allStretches.value.some(stretch => -->
+<!--        stretch.date.getFullYear() === date.getFullYear() &&-->
+<!--        stretch.date.getMonth() === date.getMonth() &&-->
+<!--        stretch.date.getDate() === date.getDate()-->
+<!--      ),-->
+<!--      otherMonth: date.getMonth() !== month-->
+<!--    });-->
+<!--  }-->
+
+<!--  return days;-->
+<!--});-->
+
+<!--const previousMonth = () => {-->
+<!--  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() - 1, 1);-->
+<!--};-->
+
+<!--const nextMonth = () => {-->
+<!--  currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1);-->
+<!--};-->
+<!--</script>-->
+
+
+
 <template>
   <div class="container">
     <header class="header">
       <h1>更年期ストレッチサポート</h1>
-      <button @click="logout" class="logout-button">ログアウト</button>
     </header>
     <main class="main-content">
       <section class="recommended-stretch">
@@ -23,12 +182,12 @@
       <section class="past-stretches">
         <h2>最近のストレッチ記録</h2>
         <div v-if="recentStretches.length > 0" class="stretch-list">
-          <div v-for="stretch in recentStretches" :key="stretch.date" class="past-stretch-item">
-            <div class="past-stretch-date">{{ formatDate(stretch.date) }}</div>
+          <div v-for="stretch in recentStretches" :key="stretch.SymptomId" class="past-stretch-item">
+            <div class="past-stretch-date">{{ formatDate(new Date(stretch.Timestamp)) }}</div>
             <div class="past-stretch-content">
-              <h4>{{ stretch.name }}</h4>
-              <p><strong>感想:</strong> {{ stretch.impression }}</p>
-              <p><strong>疲労改善度:</strong> {{ stretch.fatigueImprovement }}/5</p>
+              <h4>症状: {{ stretch.SymptomDetails.map(sd => sd.Symptom).join(', ') }}</h4>
+              <p><strong>感想:</strong> {{ stretch.Note || '感想がありません' }}</p>
+              <p><strong>取った対策:</strong> {{ stretch.ActionsTaken.join(', ') }}</p>
             </div>
           </div>
         </div>
@@ -56,29 +215,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router'
 
-const router = useRouter();
-
-const logout = () => {
-  // ログアウト処理をここに実装
-  console.log('ログアウト処理を実行');
-
-  // ローカルストレージのクリア
-  localStorage.removeItem('userId'); // ユーザーIDを削除
-  localStorage.removeItem('token'); // 認証トークンを削除
-  localStorage.removeItem('SymtomId');
-  localStorage.removeItem('user_id');
-  
-  // セッションストレージのクリア（必要に応じて）
-  sessionStorage.removeItem('userId'); // ユーザーIDを削除（セッションストレージに保存している場合）
-  sessionStorage.removeItem('token'); // 認証トークンを削除（セッションストレージに保存している場合）
-
-  // ログインページへリダイレクト
-  router.push('/login');
-};
-
+const router = useRouter()
 
 const recommendedStretch = ref({
   name: '肩こり解消ストレッチ',
@@ -86,15 +226,44 @@ const recommendedStretch = ref({
   image: '/placeholder.svg?height=200&width=200'
 });
 
-const allStretches = ref([
-  { date: new Date(2023, 4, 15), name: '腰痛改善ストレッチ', impression: 'とても効果を感じました。腰の張りが和らぎました。', fatigueImprovement: 4 },
-  { date: new Date(2023, 4, 14), name: '肩こり解消ストレッチ', impression: '肩の凝りがだいぶ軽くなりました。毎日続けたいです。', fatigueImprovement: 5 },
-  { date: new Date(2023, 4, 13), name: '全身リラックスストレッチ', impression: '全身の疲れが取れた感じがします。', fatigueImprovement: 4 },
-  { date: new Date(2023, 4, 10), name: '足のむくみ解消ストレッチ', impression: '足の軽さが違います。続けていきたいです。', fatigueImprovement: 5 },
-]);
+// ストレッチ記録データ
+const recentStretches = ref([]);
 
-const recentStretches = computed(() => {
-  return allStretches.value.slice(0, 3);
+// ユーザーIDをローカルストレージから取得
+const userId = localStorage.getItem('userId');
+
+const fetchStretches = async () => {
+  try {
+    // mtiTokenをローカルストレージから取得
+    const mtiToken = localStorage.getItem('token');
+
+    if (!mtiToken) {
+      console.error('mtiTokenが存在しません');
+      return;
+    }
+
+    const response = await fetch(`https://os21ehqa5l.execute-api.ap-northeast-1.amazonaws.com/user/symptoms?user_id=${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${mtiToken}`,  // Authorizationヘッダーにトークンを追加
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const data = await response.json();
+    if (data.message === "データが正常に取得されました。") {
+      recentStretches.value = data.data;
+    } else {
+      console.error("データ取得エラー:", data.message);
+    }
+  } catch (error) {
+    console.error("APIエラー:", error);
+  }
+};
+
+
+// コンポーネントがマウントされた時にデータを取得
+onMounted(() => {
+  fetchStretches();
 });
 
 const formatDate = (date) => {
@@ -106,15 +275,16 @@ const formatDate = (date) => {
 };
 
 const startStretch = () => {
-  router.push('/katakoristretch01');
+  router.push('/katakoristretch01') 
   console.log('ストレッチを開始します');
 };
 
 const goToSymptomPage = () => {
-  router.push('/symptom-select');
+  router.push('/symptom-select') 
   console.log('症状別ストレッチページに遷移します');
 };
 
+// カレンダー関連の状態と関数
 const currentDate = ref(new Date());
 
 const currentMonthYear = computed(() => {
@@ -135,10 +305,10 @@ const calendarDays = computed(() => {
     const date = new Date(year, month, i - startDay + 1);
     days.push({
       date: date,
-      hasStretch: allStretches.value.some(stretch => 
-        stretch.date.getFullYear() === date.getFullYear() &&
-        stretch.date.getMonth() === date.getMonth() &&
-        stretch.date.getDate() === date.getDate()
+      hasStretch: recentStretches.value.some(stretch => 
+        new Date(stretch.Timestamp).getFullYear() === date.getFullYear() &&
+        new Date(stretch.Timestamp).getMonth() === date.getMonth() &&
+        new Date(stretch.Timestamp).getDate() === date.getDate()
       ),
       otherMonth: date.getMonth() !== month
     });
@@ -155,6 +325,7 @@ const nextMonth = () => {
   currentDate.value = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 1);
 };
 </script>
+
 
 <style scoped>
 .container {
