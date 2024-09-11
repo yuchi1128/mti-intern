@@ -1,14 +1,29 @@
-         ___        ______     ____ _                 _  ___  
-        / \ \      / / ___|   / ___| | ___  _   _  __| |/ _ \ 
-       / _ \ \ /\ / /\___ \  | |   | |/ _ \| | | |/ _` | (_) |
-      / ___ \ V  V /  ___) | | |___| | (_) | |_| | (_| |\__, |
-     /_/   \_\_/\_/  |____/   \____|_|\___/ \__,_|\__,_|  /_/ 
- ----------------------------------------------------------------- 
+## MTI インターンのチーム開発で作成したアプリ
 
+### サービス名
 
-Hi there! Welcome to AWS Cloud9!
+ほっとケア・フィット
 
-To get started, create some files, play with the terminal,
-or visit https://docs.aws.amazon.com/console/cloud9/ for our documentation.
+### 機能
 
-Happy coding!
+- 更年期の症状に合わせたストレッチ法を提供(2 分コース・10 分コース)
+- ストレッチ終了後に優しい言葉をかける
+- 簡単な記録をして管理ができる
+- AWS(S3,APIGateay,Lambda,DynamoDB,CloudWach)
+
+### ターゲット
+
+- 更年期を自覚し始めている 40 代、50 代の女性
+- 症状は感じ始めたけど何していいか分からない人
+
+## ベネフィット
+
+- ちょっとした習慣で症状を改善できる
+- 継続することで更年期症状を抑えることができ
+
+## 使用技術
+
+- Vue.js
+- Node.js
+- Semantic UI
+- AWS(S3,APIGateay,Lambda,DynamoDB,CloudWach)
