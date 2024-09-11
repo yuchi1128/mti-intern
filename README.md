@@ -9,7 +9,6 @@
 - 更年期の症状に合わせたストレッチ法を提供(2 分コース・10 分コース)
 - ストレッチ終了後に優しい言葉をかける
 - 簡単な記録をして管理ができる
-- AWS(S3, APIGateay, Lambda, DynamoDB, CloudWach)
 
 ### ターゲット
 
@@ -26,4 +25,4 @@
 - Vue.js
 - Node.js
 - Semantic UI
-- AWS(S3,APIGateay,Lambda,DynamoDB,CloudWach)
+- AWS(S3, APIGateay, Lambda, DynamoDB, CloudWach)
