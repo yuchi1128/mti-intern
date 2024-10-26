@@ -4,6 +4,10 @@
 
 ほっとケア・フィット
 
+### 画面
+<img width="241" alt="image" src="https://github.com/user-attachments/assets/eb63f9dc-a55c-466f-82c4-d9f03252ccb8">
+<img width="241" alt="image" src="https://github.com/user-attachments/assets/5163d21c-ae3d-487a-8d3c-ecebd12cf0c3">
+
 ### 機能
 
 - 更年期の症状に合わせたストレッチ法を提供(2 分コース・10 分コース)
